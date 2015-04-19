@@ -31,9 +31,9 @@
 ;;         nil
 ;;       normalized)))
 
-(defun shar (to)
+(defun shar (arg to)
   "Intelligently share the current buffer, or a part of it, to email or number TO."
-  (interactive "sEnter email or phone number: ")
+  (interactive "P\nsEnter email or phone number: ")
   (if (vc-backend (buffer-file-name))
       (progn
         (git-link git-link-default-remote
@@ -44,7 +44,9 @@
         (sendgrid-send-message to (current-kill 0))))
     (if (not (string-match "@" to))
         (twelio-send-message to (elt (elt (elt (elt (gist-buffer) 4) 3) 0) 5))
-      (sendgrid-send-message to (buffer-string)))))
+      (if arg
+          (sendgrid-send-message to (elt (elt (elt (elt (gist-buffer) 4) 3) 0) 5))
+          (sendgrid-send-message to (buffer-string))))))
 
 (provide 'shar)
 
