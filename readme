@@ -1,1 +1,14 @@
 Share your current buffer with peeps.
+
+One single command -- shar -- contextually determines the best course
+of action. Depending upon the situation, it might:
+
+ - Text/Email a link to Github/Bitbucket pointing to the line you're
+   currently at in the file you're currently editing.
+
+ - Text a link to a Gist containing the file you're currently editing,
+   generated on-the-spot
+
+ - Email the file you're currently editing as the message body.
+
+Emaily bits use Sendgrid, Texty bits use Twilio.
