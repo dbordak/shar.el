@@ -5,7 +5,7 @@
 ;; Author: Daniel Bordak <dbordak@fastmail.fm>
 ;; URL: TODO
 ;; Version: 0.1
-;; Package-Requires: ((request "0.2") (sendgrid "0.1") (twelio "0.1") (gist "0"))
+;; Package-Requires: ((request "0.2") (sendgrid "0.1") (twelio "0.1") (gist "0") (git-link "0"))
 
 ;;; Commentary:
 ;;
@@ -34,9 +34,17 @@
 (defun shar (to)
   "Intelligently share the current buffer, or a part of it, to email or number TO."
   (interactive "sEnter email or phone number: ")
-  (if (not (string-match "@" to))
-      (twelio-send-message to (elt (elt (elt (elt (gist-buffer) 4) 3) 0) 5))
-    (sendgrid-send-message to (buffer-string))))
+  (if (vc-backend (buffer-file-name))
+      (progn
+        (git-link git-link-default-remote
+                  (car (git-link-get-region))
+                  (cdr (git-link-get-region)))
+        (if (not (string-match "@" to))
+          (twelio-send-message to (current-kill 0))
+        (sendgrid-send-message to (current-kill 0))))
+    (if (not (string-match "@" to))
+        (twelio-send-message to (elt (elt (elt (elt (gist-buffer) 4) 3) 0) 5))
+      (sendgrid-send-message to (buffer-string)))))
 
 (provide 'shar)
 
